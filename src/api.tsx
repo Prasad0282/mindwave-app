@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // Use environment variable for the API base URL, fallback to local for development
-const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:5000/api";
+const API_BASE_URL = "http://127.0.0.1:5000/api";
+// process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:5000/api";
 
 const handleError = (error: unknown) => {
   if (axios.isAxiosError(error)) {
