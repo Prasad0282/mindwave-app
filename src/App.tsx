@@ -1,25 +1,25 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { LandingPage } from "./pages/LandingPage";
-import { LoginPage } from "./pages/LoginPage";
-import { ChatPage } from "./pages/ChatPage";
-import { AuthProvider } from "./contexts/AuthContext";
+// import React from "react";
+// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// import { LandingPage } from "./pages/LandingPage";
+// import { LoginPage } from "./pages/LoginPage";
+// import { ChatPage } from "./pages/ChatPage";
+// import { AuthProvider } from "./contexts/AuthContext";
 
-function App() {
-  return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/chat" element={<ChatPage />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
-  );
-}
+// function App() {
+//   return (
+//     <AuthProvider>
+//       <Router>
+//         <Routes>
+//           <Route path="/" element={<LandingPage />} />
+//           <Route path="/login" element={<LoginPage />} />
+//           <Route path="/chat" element={<ChatPage />} />
+//         </Routes>
+//       </Router>
+//     </AuthProvider>
+//   );
+// }
 
-export default App;
+// export default App;
 
 // import React, { useEffect } from "react";
 // import {
@@ -130,3 +130,65 @@ export default App;
 
 // export default App;
 // // {user ? <CompanionPage /> : <LandingPage />} />
+import React, { useState, useEffect } from "react";
+import { supabase } from "./lib/supabase";
+import { ChatPage } from "./pages/ChatPage";
+import { LandingPage } from "./pages/LandingPage";
+import { LoginPage } from "./pages/LoginPage";
+
+function App() {
+  const [showChat, setShowChat] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    checkUser();
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setIsAuthenticated(!!session);
+        setIsLoading(false);
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  const checkUser = async () => {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    } catch (error) {
+      console.error("Error checking auth status:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#FFFAF0]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1ed75f]"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#FFFAF0]">
+      {!isAuthenticated ? (
+        !showChat ? (
+          <LandingPage onStart={() => setShowChat(true)} />
+        ) : (
+          <LoginPage onAuthSuccess={() => setIsAuthenticated(true)} />
+        )
+      ) : (
+        <ChatPage />
+      )}
+    </div>
+  );
+}
+
+export default App;

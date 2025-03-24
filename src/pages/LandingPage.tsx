@@ -350,7 +350,11 @@ import { motion, useScroll, useTransform, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { Button } from "../components/Button";
 
-export const LandingPage: React.FC = () => {
+interface LandingPageProps {
+  onStart: () => void;
+}
+
+export const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
   const navigate = useNavigate();
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 300], [0, -100]);
@@ -465,7 +469,7 @@ export const LandingPage: React.FC = () => {
               transition={{ delay: 0.6, duration: 0.8 }}
             >
               <Button
-                onClick={() => navigate("/login")}
+                onClick={onStart}
                 className="text-lg px-10 py-4 mb-16 transform hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
               >
                 Get Started

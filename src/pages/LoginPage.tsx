@@ -175,14 +175,18 @@
 //     </motion.div>
 //   );
 // };
-
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Github, Mail, ArrowLeft } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { Github, Mail, ArrowLeft } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom"; // Still needed for back navigation
 
-export const LoginPage: React.FC = () => {
+// Define the props interface
+interface LoginPageProps {
+  onAuthSuccess: () => void;
+}
+
+export const LoginPage: React.FC<LoginPageProps> = ({ onAuthSuccess }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
@@ -191,7 +195,6 @@ export const LoginPage: React.FC = () => {
   const { signIn, signUp, signInWithProvider } = useAuth();
   const navigate = useNavigate();
 
-  // Parallax scroll effects
   const { scrollY } = useScroll();
   const backgroundY = useTransform(scrollY, [0, 500], [0, -50]);
   const backgroundOpacity = useTransform(scrollY, [0, 300], [1, 0.5]);
@@ -226,7 +229,8 @@ export const LoginPage: React.FC = () => {
       } else {
         await signIn(email, password);
       }
-      navigate("/chat");
+      // Replace navigation with onAuthSuccess callback
+      onAuthSuccess();
     } catch (err) {
       if (err instanceof Error) {
         if (err.message.includes("email_address_invalid")) {
@@ -243,7 +247,7 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  // Animation variants
+  // Animation variants remain unchanged
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -266,12 +270,10 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Animated background elements with parallax */}
       <motion.div
         style={{ y: backgroundY, opacity: backgroundOpacity }}
         className="absolute inset-0 overflow-hidden"
       >
-        {/* Floating grid background similar to landing page */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(120,50,255,0.15),transparent_70%)]"></div>
         <svg
           className="absolute inset-0 w-full h-full opacity-20"
@@ -294,9 +296,8 @@ export const LoginPage: React.FC = () => {
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)" />
         </svg>
-
+        {/* Rest of the background animations unchanged */}
         <div className="absolute top-0 left-0 w-full h-full">
-          {/* Neural network-like animated nodes */}
           {[...Array(30)].map((_, i) => (
             <motion.div
               key={i}
@@ -316,8 +317,6 @@ export const LoginPage: React.FC = () => {
               }}
             />
           ))}
-
-          {/* Connection lines */}
           <svg className="absolute inset-0 w-full h-full opacity-20">
             <defs>
               <linearGradient
@@ -352,8 +351,6 @@ export const LoginPage: React.FC = () => {
             ))}
           </svg>
         </div>
-
-        {/* Floating orbs with parallax effect */}
         <motion.div
           className="absolute top-1/4 -left-20 w-40 h-40 bg-purple-600/20 rounded-full blur-3xl"
           animate={{
@@ -392,7 +389,6 @@ export const LoginPage: React.FC = () => {
         />
       </motion.div>
 
-      {/* Glassmorphism card with parallax effect */}
       <motion.div
         style={{ scale: formScale, y: formY }}
         variants={containerVariants}
@@ -423,16 +419,9 @@ export const LoginPage: React.FC = () => {
             }}
             className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-purple-600/20 relative"
           >
-            {/* Orbiting particles similar to landing page */}
             <motion.div
-              animate={{
-                rotate: 360,
-              }}
-              transition={{
-                duration: 8,
-                repeat: Infinity,
-                ease: "linear",
-              }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
               className="absolute inset-0"
             >
               {[...Array(3)].map((_, i) => (

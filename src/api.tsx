@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Use environment variable for the API base URL, fallback to local for development
-const API_BASE_URL = "http://127.0.0.1:5000/api";
+const VITE_API_BASE_URL = "https://mindwave-85wd.onrender.com/api";
 // process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:5000/api";
 
 const handleError = (error: unknown) => {
@@ -19,7 +19,7 @@ const handleError = (error: unknown) => {
 
 export const createNewChat = async () => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/chat/new`);
+    const response = await axios.post(`${VITE_API_BASE_URL}/chat/new`);
     return response.data;
   } catch (error) {
     handleError(error);
@@ -28,7 +28,7 @@ export const createNewChat = async () => {
 
 export const sendMessage = async (chatId: string, message: string) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/chat/message`, {
+    const response = await axios.post(`${VITE_API_BASE_URL}/chat/message`, {
       chatId,
       message,
     });
@@ -40,7 +40,7 @@ export const sendMessage = async (chatId: string, message: string) => {
 
 export const changeLanguage = async (language: string) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/chat/language`, {
+    const response = await axios.post(`${VITE_API_BASE_URL}/chat/language`, {
       language,
     });
     return response.data;
@@ -51,7 +51,7 @@ export const changeLanguage = async (language: string) => {
 
 export const submitFeedback = async (rating: string, comment: string) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/chat/feedback`, {
+    const response = await axios.post(`${VITE_API_BASE_URL}/chat/feedback`, {
       rating,
       comment,
     });
